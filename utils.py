@@ -1,88 +1,48 @@
-import re
+import argparse
+import os
 
-import random
-import string
-import requests
+from grafo import Grafo
 
-URL_PALABRAS = "https://raw.githubusercontent.com/JorgeDuenasLerin/diccionario-espanol-txt/refs/heads/master/0_palabras_todas.txt"
+ES_DIRIGIDO = False
 
-def leer_palabras(filename):
-    with open(filename, 'r', encoding='utf-8') as file:
-        return [line.strip() for line in file if line.strip()]
+def crear_grafo(ruta_grafo):
+    grafo = Grafo(es_dirigido = ES_DIRIGIDO)
 
-def leer_cadena_desencriptada(filename):
-    with open(filename, 'r', encoding='utf-8') as file:
-        return [line.strip() for line in file if line.strip()]
+    with open(ruta_grafo) as f:
+        for linea in f:
+            linea = linea.strip()
 
-def leer_archivo_esperado(filename, archivo_palabras, archivo_cadena_desencriptada):
-    resultado_buscado = (archivo_palabras, archivo_cadena_desencriptada)
-    resultado_actual = None
+            if not linea or linea.startswith('#'): continue
 
-    resultados = []
+            u, v = map(int, linea.split(','))
+            
+            if not grafo.pertenece_vertice(u):
+                grafo.agregar_vertice(u)
+            
+            if not grafo.pertenece_vertice(v):
+                grafo.agregar_vertice(v)
+            
+            grafo.agregar_arista(u, v)
 
-    with open(filename, "r", encoding="utf-8") as file:
-        for line in file:
-            line = line.strip()
+    return grafo
 
-            if (resultado_actual == resultado_buscado) and not line:
-                break
-
-            if not line:
-                continue
-
-            match = re.match(r'Palabras:\s(.+),\sentrada:\s*(.+)', line)
-
-            if match:
-                resultado_actual = tuple(m.strip() for m in match.groups())
-                continue
-
-            if (resultado_actual == resultado_buscado):
-                resultados.append(line)
-
-    return resultados
-
-def generar_entrada_aleatoria(cantidad_palabras, cantidad_palabras_desencriptadas, largo_maximo_palabras, valido):
-    palabras = requests.get(URL_PALABRAS).text.splitlines()
-
-    palabras_validas = [p.lower() for p in palabras if p.isalpha() and len(p) >= 3 and len(p) <= largo_maximo_palabras]
-
-    palabras_elegidas = random.sample(palabras_validas, cantidad_palabras)
-
-    if valido:
-        palabras_aleatorias = random.choices(palabras_elegidas, k = cantidad_palabras_desencriptadas)
-        cadena_desencriptada_elegida = ''.join(palabras_aleatorias)
+def generar_grafo_lista(nombre_archivo, cantidad_vertices):
+    if cantidad_vertices < 2:
+        raise ValueError("Debe haber al menos 2 vértices para formar una lista")
     
-    else:
-        palabras_aleatorias = random.choices(palabras_elegidas, k = cantidad_palabras_desencriptadas - 1)
-        cadena_desencriptada_elegida_parcial = ''.join(palabras_aleatorias)
+    carpeta_destino = os.path.join(".", "data", "gen")
+    os.makedirs(carpeta_destino, exist_ok=True)
 
-        ruido = ''.join(random.choices(string.ascii_lowercase, k=random.randint(1, 10)))
-        indice_ruido = random.randint(0, len(cadena_desencriptada_elegida_parcial))
-        
-        cadena_desencriptada_elegida = (
-            cadena_desencriptada_elegida_parcial[:indice_ruido] +
-            ruido +
-            cadena_desencriptada_elegida_parcial[indice_ruido:]
-        )
+    ruta_completa = os.path.join(carpeta_destino, nombre_archivo)
 
-    return palabras_elegidas, cadena_desencriptada_elegida
+    with open(ruta_completa, "w") as archivo:
+        for i in range(cantidad_vertices - 1):
+            archivo.write(f"{i},{i+1}\n")
 
-def guardar_entrada_aleatoria(ruta_archivo_palabras, palabras, ruta_archivo_cadena, cadena_desencriptada):
-
-    with open(ruta_archivo_palabras, "w", encoding="utf-8") as archivo_palabras:
-        for palabra in palabras:
-            archivo_palabras.write(palabra + "\n")
-
-    with open(ruta_archivo_cadena, "w", encoding="utf-8") as archivo_cadena:
-        archivo_cadena.write(cadena_desencriptada)
-
-def verificador(palabras, cadena_desencriptada, mensaje):
-
-    # Verificamos que todas las palabras del mensaje se encuentren en el diccionario
-    for palabra in mensaje.split():
-        if palabra not in palabras:
-            return False
-        
-    # Verificamos que la concatenacion del mensaje sea exactamente igual a la cadena desencriptada
-    mensaje_concatenado = "".join(mensaje.split())
-    return cadena_desencriptada == mensaje_concatenado
+def parsear_argumentos():
+    parser = argparse.ArgumentParser(description="Clustering de un grafo con bajo diámetro")
+    parser.add_argument("archivo", help="Ruta al archivo que contiene el grafo")
+    parser.add_argument("clusters", type=int, help="Número de clusters a generar")
+    parser.add_argument("-t", "--temporizador", action="store_true", help="Mostrar tiempo de ejecución")
+    parser.add_argument("-a", "--adyacentes", action="store_true", help="Mostrar adyacentes del grafo")
+    return parser.parse_args()

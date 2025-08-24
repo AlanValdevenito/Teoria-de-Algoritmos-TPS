@@ -1,177 +1,167 @@
-# Trabajo Práctico 2: Que parezca programación dinámica
+# Trabajo Práctico 3: Comunidades NP-Completas
 
-El presente trabajo busca evaluar el desarrollo y análisis de un algoritmo de Programación Dinámica.
+El presente trabajo busca evaluar el desarrollo y análisis de un algoritmo de Backtracking para resolver un Problema NP-Completo, así como el análisis de posibles aproximaciones. 
 
 # Ejecucion
 
-### Algoritmo PD
+### Algoritmo BT
 
-Archivos involucrados: [tp2.py](tp2.py)
+Archivos involucrados: [backtraking.py](backtracking.py)
 
 Para ejecutar el algoritmo, se debe ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
 
 ```echo
-python3 ./tp2.py R1 < R2
+python3 ./backtraking.py <R> <K>
 ```
 
-donde **R1** es la ruta de un archivo txt que debe poseer, por ejemplo, el siguiente formato:
+donde **R** es la ruta de un archivo txt/csv que representa el grafo y que debe poseer, por ejemplo, el siguiente formato:
 
 ```
-argentina
-hola
-como
-eso
-es
-zanahoria
-andar
-plancha
-compra
-reptiles
-consistencia
-semana
-votar
-as
-reto
+0,1
+0,8
+1,4
+1,3
+1,5
+1,6
+1,9
+2,7
+2,3
+2,5
+3,4
+3,6
+3,7
+3,5
+4,9
+5,7
+5,8
+6,7
+7,9
+8,9
 ```
 
-y donde **R2** es la ruta de un archivo txt con las posibles cadenas que podrian ser mensajes a detectar (una por linea) que debe poseer, por ejemplo, el siguiente formato:
+y donde **K** es un valor entero que representa la cantidad de clusters.
 
-```
-esandarholaargentinacompraandarplanchaplanchareptileses
-argentinaesholaandarconsistenciwreptilescompraesoretozanahoria
-ascomosemanasemanaconsistenciaandarzwnahoriaandarandarplancha
-argentinaretocompraplanchaconsistenciaasretoargentinavotarcompra
-argentinaargentinaconsistenciazanahoriaargentinaescompraholaconsistenciaargentina
-esoesoholaandarandarreptilesasplanchaplanchaandar
-comprasemanaescomwconsistenciaesconsistenciaretovotawsemana
-argentinaandaresholaasesvotarplanchacompracompra
-planchacomocomoconsistenciaesvotarzanahoriavotarandarreto
-votarargentinaargentinaandarvotarvotarcomozanahoriaholaeso
-holacomoandarretovotarcomprazanahoriasemanavotarargentina
-comosemanaesozanahoriaconsistenciasemanaconsistenciaesoconsistenciavotar
-retozanahoriasemanaasawvotarasretoargentinareto
-andaresesoandarcompraasconsistenciaconsistenciaandarvotar
-holaandarconsistenciaandaresoreptilesandarzanahoriaesoreptiles
-retosemanaretosemanavotarcomoandarvotarholareptiles
-compraandarconsistenciaargentinaesoreptilesretoplanchaasreto
-consistenciaretoretoasconsistenciasemanaesosemanaholaeso
-esholaholareptilesplanchaconsistenciaholaplanchavotarcomo
-comprazanahoriaesozanahoriaconsistenciareptilesvotarcompraholahola
-```
-
-El resultado se mostrara por consola con, por ejemplo, el siguiente formato:
-
-```
-es andar hola argentina compra andar plancha plancha reptiles es
-No es un mensaje
-No es un mensaje
-argentina reto compra plancha consistencia as reto argentina votar compra
-argentina argentina consistencia zanahoria argentina es compra hola consistencia argentina
-eso eso hola andar andar reptiles as plancha plancha andar
-No es un mensaje
-argentina andar es hola as es votar plancha compra compra
-plancha como como consistencia es votar zanahoria votar andar reto
-votar argentina argentina andar votar votar como zanahoria hola eso
-hola como andar reto votar compra zanahoria semana votar argentina
-como semana eso zanahoria consistencia semana consistencia eso consistencia votar
-No es un mensaje
-andar es eso andar compra as consistencia consistencia andar votar
-hola andar consistencia andar eso reptiles andar zanahoria eso reptiles
-reto semana reto semana votar como andar votar hola reptiles
-compra andar consistencia argentina eso reptiles reto plancha as reto
-consistencia reto reto as consistencia semana eso semana hola eso
-es hola hola reptiles plancha consistencia hola plancha votar como
-compra zanahoria eso zanahoria consistencia reptiles votar compra hola hola
-```
-
-
-Tambièn es posible ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+Tambien es posible ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
 
 ```echo
-python3 ./tp2.py R1 -v < R2
+python3 ./backtraking.py <R> <K> -t -a
 ```
 
-donde **R1** y **R2** son rutas de un archivo txt con el formato mencionado anteriormente y el flag **-v** se utiliza para validar 
-que el mensaje sea correcto.
+donde el flag **-t** se utiliza para cronometrar el tiempo de ejecucion de nuestro algoritmo y el flag **-a** muestra los adyacentes del grafo elegido.
 
-Un mensaje es correcto si
-1. Todas las palabras que conforman el mensaje se encuentran en el diccionario de palabras
-2. La concatenacion del mensaje es exactamente igual a la cadena desencriptada
-
-### Pruebas
-
-Archivos involucrados: [tests.py](tests/tests.py)
-
-Para ejecutar los tests, se debe ejecutar el siguiente comando por consola sobre el directorio `tests`:
+Para mas informacion sobre los argumentos y flags se puede ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
 
 ```echo
-python3 ./tests.py
+python3 ./backtraking.py -h
 ```
 
-Se ejecutaran los casos de prueba que se encuentran en [resources](tests/resources) y se compararan los resultados con los esperados que se encuentran en [expected](tests/expected).
+donde el flag **-h** se utiliza para mostrar una ayuda rapida sobre el funcionamiento.
 
-### Generador
+### Algoritmo PL
 
-Archivos involucrados: [generador.py](generador.py)
+Archivos involucrados: [programacion_lineal.py](programacion_lineal.py)
 
-Para ejecutar el generador, se debe ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+Para ejecutar el algoritmo, se debe ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
 
 ```echo
-python3 ./generador.py <cantidad de palabras> <cantidad de palabras de la cadena desencriptada> <largo maximo de palabras> <cadena desencriptada valida>
+python3 ./programacion_lineal.py <R> <K>
 ```
 
-donde **cadena desencriptada valida** debe ser un booleano (true/false) para indicar si se desea generar una entrada que es un mensaje o no.
-
-El generador guardara el resultado en dos archivos distintos en la ruta **tests/gen** con, por ejemplo, el siguiente formato:
+donde **R** es la ruta de un archivo txt/csv que representa el grafo y que debe poseer, por ejemplo, el siguiente formato:
 
 ```
-barboteareis
-apezuñase
-inspiraron
-conspiras
-desemballestéis
-robotizare
-enserenábamos
-higienizas
-acaserases
-suri
-metatizas
-bipolarizabais
-cuina
-peptídico
-porfiareis
-odié
-bozaleo
-descentralizan
-soportes
-apuntilláramos
-acurrucasteis
-cachureen
-propagáramos
-esprintad
-ínvido
-computarizar
-avoraces
-desbaratásemos
-entierro
-escoria
-prontuariasen
-encompadrasteis
-menguada
-apreciaríais
-empobrezcamos
-robases
-refaccionáis
-desplantaba
-abejeó
-ahorraras
+0,1
+0,8
+1,4
+1,3
+1,5
+1,6
+1,9
+2,7
+2,3
+2,5
+3,4
+3,6
+3,7
+3,5
+4,9
+5,7
+5,8
+6,7
+7,9
+8,9
 ```
 
-```
-soportesacaserasesencompadrasteisahorrarasmenguadaacurrucasteisbarboteareisbozaleohigienizasahorrarasapuntilláramosrobotizareempobrezcamosdescentralizancomputarizarínvidobipolarizabaisrobasesbozaleoahorrarascuinaporfiareisbarboteareissoportesempobrezcamosdesplantabaentierroporfiareisesprintadesprintad
+y donde **K** es un valor entero que representa la cantidad de clusters.
+
+Tambien es posible ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+
+```echo
+python3 ./programacion_lineal.py <R> <K> -t -a
 ```
 
-y el siguiente nombre: **gen-cadena/palabras-cantidad-largo-true/false** dependiendo del archivo generado.
+donde el flag **-t** se utiliza para cronometrar el tiempo de ejecucion de nuestro algoritmo y el flag **-a** muestra los adyacentes del grafo elegido.
+
+Para mas informacion sobre los argumentos y flags se puede ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+
+```echo
+python3 ./programacion_lineal.py -h
+```
+
+donde el flag **-h** se utiliza para mostrar una ayuda rapida sobre el funcionamiento.
+
+### Algoritmo Aproximacion
+
+Archivos involucrados: [aproximacion.py](aproximacion.py)
+
+Para ejecutar el algoritmo, se debe ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+
+```echo
+python3 ./aproximacion.py <R> <K>
+```
+
+donde **R** es la ruta de un archivo txt/csv que representa el grafo y que debe poseer, por ejemplo, el siguiente formato:
+
+```
+0,1
+0,8
+1,4
+1,3
+1,5
+1,6
+1,9
+2,7
+2,3
+2,5
+3,4
+3,6
+3,7
+3,5
+4,9
+5,7
+5,8
+6,7
+7,9
+8,9
+```
+
+y donde **K** es un valor entero que representa la cantidad de clusters.
+
+Tambien es posible ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+
+```echo
+python3 ./aproximacion.py <R> <K> -t -a
+```
+
+donde el flag **-t** se utiliza para cronometrar el tiempo de ejecucion de nuestro algoritmo y el flag **-a** muestra los adyacentes del grafo elegido.
+
+Para mas informacion sobre los argumentos y flags se puede ejecutar el siguiente comando por consola sobre la ruta raiz del repositorio:
+
+```echo
+python3 ./aproximacion.py -h
+```
+
+donde el flag **-h** se utiliza para mostrar una ayuda rapida sobre el funcionamiento.
 
 # Licencia
 
