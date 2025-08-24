@@ -1,142 +1,88 @@
 import re
+
 import random
+import string
+import requests
 
-def leer_archivo(filename):
-    with open(filename, 'r') as file:
-        lines = [line.strip() for line in file if line.strip() and not line.startswith("#")]
+URL_PALABRAS = "https://raw.githubusercontent.com/JorgeDuenasLerin/diccionario-espanol-txt/refs/heads/master/0_palabras_todas.txt"
 
-    n = int(lines[0])
+def leer_palabras(filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        return [line.strip() for line in file if line.strip()]
 
-    timestamps_aproximados = []
+def leer_cadena_desencriptada(filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        return [line.strip() for line in file if line.strip()]
 
-    for i in range(1, n + 1):
-        t, e = map(int, lines[i].split(','))
-        timestamps_aproximados.append((t,e))
+def leer_archivo_esperado(filename, archivo_palabras, archivo_cadena_desencriptada):
+    resultado_buscado = (archivo_palabras, archivo_cadena_desencriptada)
+    resultado_actual = None
 
-    transacciones = [int(lines[i]) for i in range(n + 1, 2 * n + 1)]
-
-    return timestamps_aproximados, transacciones
-
-def leer_archivo_esperado(filename, archivo_buscado):
-    with open(filename, 'r') as file:
-        lines = [line.strip() for line in file if line.strip() and not line.startswith("#")]
-
-    archivo_actual = None
     resultados = []
 
-    for line in lines:
-        line = line.strip()
+    with open(filename, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
 
-        if line.endswith(".txt"):
-            archivo_actual = line
-            continue
+            if (resultado_actual == resultado_buscado) and not line:
+                break
 
-        if archivo_actual == archivo_buscado:
-            if "No es el sospechoso correcto" in line:
-                return "No es el sospechoso correcto"
+            if not line:
+                continue
 
-            izquierda, derecha = line.split(" --> ")
-            transaccion = int(izquierda)
-            timestamp, error = map(int, derecha.replace("±", "").split())
-            resultados.append(f"{transaccion} --> {timestamp} ± {error}")
+            match = re.match(r'Palabras:\s(.+),\sentrada:\s*(.+)', line)
 
-    return "\n".join(resultados) if resultados else "Archivo no encontrado"
+            if match:
+                resultado_actual = tuple(m.strip() for m in match.groups())
+                continue
 
-def formatear_resultado(resultado):
-    resultado = "\n".join(f"{transaccion} --> {timestamp} ± {error}" for transaccion, (timestamp, error) in resultado)
-    return resultado
+            if (resultado_actual == resultado_buscado):
+                resultados.append(line)
 
-def parsear_asignaciones(asignaciones):
-    transacciones = []
-    ts_aproximados = []
+    return resultados
 
-    for linea in asignaciones.strip().split("\n"):
-        match = re.match(r"(\d+)\s-->\s(\d+)\s±\s(\d+)", linea)
-        if match:
-            transaccion = int(match.group(1))
-            ts = int(match.group(2))
-            error = int(match.group(3))
+def generar_entrada_aleatoria(cantidad_palabras, cantidad_palabras_desencriptadas, largo_maximo_palabras, valido):
+    palabras = requests.get(URL_PALABRAS).text.splitlines()
 
-            transacciones.append(transaccion)
-            ts_aproximados.append((ts, error))
+    palabras_validas = [p.lower() for p in palabras if p.isalpha() and len(p) >= 3 and len(p) <= largo_maximo_palabras]
 
-    return transacciones, ts_aproximados
+    palabras_elegidas = random.sample(palabras_validas, cantidad_palabras)
 
-def validar_asignaciones(timestamps, transacciones, resultado):
-    transacciones_resultado, timestamps_resultado = parsear_asignaciones(resultado) # Cada transaccion i se corresponde con el intervalo i
+    if valido:
+        palabras_aleatorias = random.choices(palabras_elegidas, k = cantidad_palabras_desencriptadas)
+        cadena_desencriptada_elegida = ''.join(palabras_aleatorias)
     
-    contador = {t: timestamps.count(t) for t in timestamps}
+    else:
+        palabras_aleatorias = random.choices(palabras_elegidas, k = cantidad_palabras_desencriptadas - 1)
+        cadena_desencriptada_elegida_parcial = ''.join(palabras_aleatorias)
 
-    for i, transaccion in enumerate(transacciones_resultado):
-
-        ts, error = timestamps_resultado[i]
-        izq, der = ts - error, ts + error
-
-        # La transacción no está dentro del intervalo
-        if not (izq <= transaccion <= der):
-            return [False]
-
-        # El intervalo ya fue usado por otra transaccion
-        # Esto no puede suceder ya que debe haber una transaccion por cada intervalo (a menos que el intervalo este repetido)
-        if contador[timestamps_resultado[i]] <= 0:
-            return [False, timestamps_resultado[i]]
+        ruido = ''.join(random.choices(string.ascii_lowercase, k=random.randint(1, 10)))
+        indice_ruido = random.randint(0, len(cadena_desencriptada_elegida_parcial))
         
-        contador[timestamps_resultado[i]] -= 1
+        cadena_desencriptada_elegida = (
+            cadena_desencriptada_elegida_parcial[:indice_ruido] +
+            ruido +
+            cadena_desencriptada_elegida_parcial[indice_ruido:]
+        )
 
-    return [True]
+    return palabras_elegidas, cadena_desencriptada_elegida
 
-def guardar_archivo(nombre_archivo, generacion_parseada):
+def guardar_entrada_aleatoria(ruta_archivo_palabras, palabras, ruta_archivo_cadena, cadena_desencriptada):
 
-    with open(nombre_archivo, 'w') as file:
-        file.write(generacion_parseada)
+    with open(ruta_archivo_palabras, "w", encoding="utf-8") as archivo_palabras:
+        for palabra in palabras:
+            archivo_palabras.write(palabra + "\n")
 
-def parsear_generacion(timestamps_aproximados, transacciones):
-    n = len(transacciones)
-    resultado = []
+    with open(ruta_archivo_cadena, "w", encoding="utf-8") as archivo_cadena:
+        archivo_cadena.write(cadena_desencriptada)
 
-    resultado.append(str(n))
+def verificador(palabras, cadena_desencriptada, mensaje):
 
-    for timestamp, error in timestamps_aproximados:
-        resultado.append(f"{timestamp},{error}")
-
-    for transaccion in transacciones:
-        resultado.append(str(transaccion))
-
-    return "\n".join(resultado)
-
-def generar_timestamps_aleatorios(n, ts_min, ts_max):
-    timestamps = [random.randint(ts_min, ts_max) for _  in range(n)]
-    return timestamps
-
-def generar_errores_por_timestamp_aleatorios(timestamps):
-    errores = [random.randint(0, ts) for ts in timestamps]
-    return errores
-
-def generar_transacciones_ordenadas_aleatorias(n, ts_min, ts_max):
-    transacciones = [random.randint(ts_min, ts_max) for _  in range(n)]
-    transacciones.sort()
-    return transacciones
-
-def generar_entrada_aleatoria(n, rango_min = 0, rango_max = 1000):
-    timestamps = generar_timestamps_aleatorios(n, rango_min, rango_max)
-    errores = generar_errores_por_timestamp_aleatorios(timestamps)
-    timestamps_aproximados = list(zip(timestamps, errores))
-
-    transacciones = generar_transacciones_ordenadas_aleatorias(n, rango_min, rango_max)
-
-    return timestamps_aproximados, transacciones
-
-def generar_timestamps_optimos(n, salto):
-    return [i for i in range(salto, (n+1)*salto, salto)]
-
-def generar_errores_por_timestamp_optimos(timestamps, salto):
-    return [salto//2 for i in range(len(timestamps))]
-
-def generar_entrada_optima(n, salto):
-    timestamps = generar_timestamps_optimos(n, salto)
-    errores = generar_errores_por_timestamp_optimos(timestamps, salto)
-    timestamps_aproximados = list(zip(timestamps, errores))
-
-    transacciones = timestamps[:]
-
-    return timestamps_aproximados, transacciones
+    # Verificamos que todas las palabras del mensaje se encuentren en el diccionario
+    for palabra in mensaje.split():
+        if palabra not in palabras:
+            return False
+        
+    # Verificamos que la concatenacion del mensaje sea exactamente igual a la cadena desencriptada
+    mensaje_concatenado = "".join(mensaje.split())
+    return cadena_desencriptada == mensaje_concatenado

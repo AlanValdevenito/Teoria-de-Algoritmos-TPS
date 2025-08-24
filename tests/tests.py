@@ -6,123 +6,205 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from utils import *
-from tp1 import encontrar_rata
+from tp2 import encontrar_soplon
 
-class TestsMafiaGreedy(unittest.TestCase):
+class TestsMafiaDinamica(unittest.TestCase):
 
-    def tests_encontrar_rata_5_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/5-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test01_encontrar_soplon_lorem_ipsum(self):
+        palabras = leer_palabras('./resources/lorem_ipsum_words.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/lorem_ipsum_in.txt')
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '5-es.txt')
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'lorem_ipsum_words.txt', 'lorem_ipsum_in.txt')
+
+        self.assertEqual(resultado, resultado_esperado)
+
+    def test02_encontrar_soplon_corto_10_in(self):
+        palabras = leer_palabras('./resources/corto.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/10_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'corto.txt', '10_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_5_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/5-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test03_encontrar_soplon_corto_50_in(self):
+        palabras = leer_palabras('./resources/corto.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/50_in.txt')
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '5-no-es.txt')
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'corto.txt', '50_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_10_es_bis(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/10-es-bis.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test04_encontrar_soplon_mediano_70_in(self):
+        palabras = leer_palabras('./resources/mediano.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/70_in.txt')
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '10-es-bis.txt')
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'mediano.txt', '70_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_10_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/10-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test05_encontrar_soplon_mediano_100_in(self):
+        palabras = leer_palabras('./resources/mediano.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/100_in.txt')
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '10-es.txt')
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'mediano.txt', '100_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_10_no_es_bis(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/10-no-es-bis.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-        
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+    def test06_encontrar_soplon_corto_120_in(self):
+        palabras = leer_palabras('./resources/corto.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/120_in.txt')
 
-    def tests_encontrar_rata_10_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/10-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-        
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+        resultado = []
 
-    def tests_encontrar_rata_50_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/50-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '50-es.txt')
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'corto.txt', '120_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_50_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/50-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-        
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+    def test07_encontrar_soplon_mediano_15_in(self):
+        palabras = leer_palabras('./resources/mediano.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/15_in.txt')
 
-    def tests_encontrar_rata_100_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/100-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+        resultado = []
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '100-es.txt')
-        
-        self.assertEqual(resultado, resultado_esperado)
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
 
-    def tests_encontrar_rata_100_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/100-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-        
-        self.assertEqual(resultado, "No es el sospechoso correcto")
-
-    def tests_encontrar_rata_500_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/500-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '500-es.txt')
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'mediano.txt', '15_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_500_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/500-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test08_encontrar_soplon_grande_80_in(self):
+        palabras = leer_palabras('./resources/grande.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/80_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'grande.txt', '80_in.txt')
         
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+        self.assertEqual(resultado, resultado_esperado)
+    
+    def test09_encontrar_soplon_grande_60_in(self):
+        palabras = leer_palabras('./resources/grande.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/60_in.txt')
 
-    def tests_encontrar_rata_1000(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/1000-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+        resultado = []
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '1000-es.txt')
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'grande.txt', '60_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_1000_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/1000-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
-        
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+    def test10_encontrar_soplon_grande_150_in(self):
+        palabras = leer_palabras('./resources/grande.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/150_in.txt')
 
-    def tests_encontrar_rata_5000_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/5000-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+        resultado = []
 
-        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', '5000-es.txt')
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'grande.txt', '150_in.txt')
         
         self.assertEqual(resultado, resultado_esperado)
 
-    def tests_encontrar_rata_5000_no_es(self):
-        timestamps_aproximados, timestamps = leer_archivo('./resources/5000-no-es.txt')
-        resultado = encontrar_rata(timestamps_aproximados, timestamps)
+    def test11_encontrar_soplon_gigante_200_in(self):
+        palabras = leer_palabras('./resources/gigante.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/200_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'gigante.txt', '200_in.txt')
         
-        self.assertEqual(resultado, "No es el sospechoso correcto")
+        self.assertEqual(resultado, resultado_esperado)
+    
+    def test12_encontrar_soplon_gigante_500_in(self):
+        palabras = leer_palabras('./resources/gigante.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/500_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'gigante.txt', '500_in.txt')
         
+        self.assertEqual(resultado, resultado_esperado)
+    
+    def test13_encontrar_soplon_supergigante_2000_in(self):
+        palabras = leer_palabras('./resources/supergigante.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/2000_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'supergigante.txt', '2000_in.txt')
+        
+        self.assertEqual(resultado, resultado_esperado)
+    
+    def test14_encontrar_soplon_supergigante_5000_in(self):
+        palabras = leer_palabras('./resources/supergigante.txt')
+        cadenas_desencriptadas = leer_cadena_desencriptada('./resources/5000_in.txt')
+
+        resultado = []
+
+        for cadena_desencriptada in cadenas_desencriptadas:
+            mensaje = encontrar_soplon(palabras, cadena_desencriptada)
+            resultado.append(mensaje)
+
+        resultado_esperado = leer_archivo_esperado('./expected/esperados.txt', 'supergigante.txt', '5000_in.txt')
+        
+        self.assertEqual(resultado, resultado_esperado)
+
 if __name__ == '__main__':
     unittest.main()

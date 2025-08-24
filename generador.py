@@ -1,8 +1,11 @@
 import sys
-from utils import generar_entrada_aleatoria, parsear_generacion, guardar_archivo
+from utils import generar_entrada_aleatoria, guardar_entrada_aleatoria
 
-RUTA_ARCHIVO = "tests/gen/gen-"
+RUTA_ARCHIVO_PALABRAS = "tests/gen/gen-palabras-"
+RUTA_ARCHIVO_CADENA = "tests/gen/gen-cadena-"
 SEPARADOR = "-"
+
+TRUE = "true"
 
 def main():
 
@@ -10,16 +13,16 @@ def main():
         print("Por favor, indique la cantidad de elementos y el rango de valores")
         return
     
-    n = int(sys.argv[1])
-    rango_min = int(sys.argv[2])
-    rango_max = int(sys.argv[3])
+    cantidad_palabras = int(sys.argv[1])
+    cantidad_palabras_desencriptadas = int(sys.argv[2])
+    largo_maximo_palabras = int(sys.argv[3])
+    valido = (sys.argv[4].lower() == TRUE)
 
-    timestamps_aproximados, transacciones = generar_entrada_aleatoria(n, rango_min, rango_max)
+    palabras, cadena_desencriptada = generar_entrada_aleatoria(cantidad_palabras, cantidad_palabras_desencriptadas, largo_maximo_palabras, valido)
 
-    entrada_parseada = parsear_generacion(timestamps_aproximados, transacciones)
-
-    archivo = RUTA_ARCHIVO + str(n) + SEPARADOR + str(rango_min) + SEPARADOR + str(rango_max)
-    guardar_archivo(archivo, entrada_parseada)
+    ruta_archivo_palabras = RUTA_ARCHIVO_PALABRAS + str(cantidad_palabras) + SEPARADOR + str(largo_maximo_palabras) + SEPARADOR + str(sys.argv[4].lower())
+    ruta_archivo_cadena = RUTA_ARCHIVO_CADENA + str(cantidad_palabras_desencriptadas) + SEPARADOR + str(largo_maximo_palabras) + SEPARADOR + str(sys.argv[4].lower())
+    guardar_entrada_aleatoria(ruta_archivo_palabras, palabras, ruta_archivo_cadena, cadena_desencriptada)
 
 if __name__ == '__main__':
     main()
